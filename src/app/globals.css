@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary: #d946ef;
+  --secondary-hover: #c084fc;
+  --text: #0f172a;
+  --muted: #475569;
+  --bg: #fafafa;
+  --white: #ffffff;
+  --border: #e2e8f0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* CONTAINER FIX */
+.container-custom {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* SECTION SPACING FIX */
+.section-padding {
+  padding: 110px 0;
+}
+
+/* PREMIUM BACKGROUND */
+.gradient-bg {
+  background:
+    radial-gradient(circle at top left,
+      rgba(79, 70, 229, 0.08),
+      transparent 35%),
+    radial-gradient(circle at top right,
+      rgba(217, 70, 239, 0.08),
+      transparent 35%),
+    #fafafa;
+}
+
+/* GLASS EFFECT */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 20px 50px rgba(79, 70, 229, 0.05);
+}
+
+/* BUTTONS */
+.primary-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  color: white !important;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 600;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+  background: linear-gradient(135deg, var(--primary-hover, #4338ca), var(--secondary-hover, #c084fc)) !important;
+}
+
+.secondary-btn {
+  border: 1px solid var(--border);
+  background: white;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 600;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.secondary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, .05);
+  border-color: rgba(79, 70, 229, 0.3);
+  color: var(--primary);
+}
+
+/* TITLES */
+.section-title {
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.section-subtitle {
+  color: var(--muted);
+  margin-top: 18px;
+  max-width: 700px;
+  line-height: 1.9;
+  font-size: 17px;
+}
+
+/* SHADOW */
+.card-shadow {
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, .05),
+    0 20px 60px rgba(15, 23, 42, .06);
+}
+
+/* CARD HEIGHT ALIGNMENT */
+.equal-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAVBAR FIX */
+header {
+  width: 100%;
+}
+
+/* CTA OVERFLOW FIX */
+.cta-grid {
+  display: grid;
+  grid-template-columns: 1.4fr .9fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .container-custom {
+    max-width: 1140px;
+  }
+}
+
+@media (max-width: 992px) {
+
+  .section-padding {
+    padding: 80px 0;
+  }
+
+  .cta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .container-custom {
+    padding-inline: 20px;
+  }
+
+  .section-padding {
+    padding: 70px 0;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .container-custom {
+    padding-inline: 16px;
+  }
+
+  .section-padding {
+    padding: 60px 0;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.8),
+      transparent);
+  animation: shimmer 1.8s infinite;
+}
