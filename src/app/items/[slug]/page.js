@@ -1,45 +1,49 @@
 import ProductDetails from "./ProductDetails";
+import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
+    
+    let product = null;
+    try {
+        const products = await fetchFullCatalog();
+        product = products.find((p) => p.slug === slug);
+    } catch (error) {
+        console.error("Error fetching product metadata on server:", error);
+    }
 
-    const productName = slug
+    const productName = product ? product.title : slug
         ?.replace(/-/g, " ")
         ?.replace(/\b\w/g, (c) => c.toUpperCase());
 
-    const title = `${productName} Supplier in India | Price, Dealer & Distributor | Central Biomedicals`;
+    const categoryName = product?.category || "Biomedical Equipment";
+    const brandName = product?.brand || "Raj Biosis";
 
-    const description = `Buy ${productName} at best price in India. Trusted supplier, dealer and distributor of ${productName} for hospitals, laboratories, diagnostic centers, research institutes and healthcare facilities. Contact Central Biomedicals for latest quotation and product details.`;
+    const title = product 
+        ? `${productName} | ${categoryName} Exporter & Supplier | Raj Biosis`
+        : `${productName} Supplier in India | Price & Dealer | Raj Biosis`;
 
-    const url = `https://centralbiomedicals.com/items/${slug}`;
+    const description = product?.description || product?.desc || `Buy ${productName} from Raj Biosis. Trusted manufacturer, supplier and exporter of medical diagnostic reagents, biochemistry instruments and laboratory kits.`;
+
+    const url = `https://glucostrips.com/items/${slug}`;
 
     return {
         title,
-        description,
+        description: description.slice(0, 160),
 
         keywords: [
             productName,
             `${productName} Supplier`,
-            `${productName} Dealer`,
-            `${productName} Distributor`,
-            `${productName} Manufacturer`,
             `${productName} Exporter`,
+            `${productName} Manufacturer`,
+            `${productName} Distributor`,
             `${productName} Price`,
-            `${productName} Price in India`,
-            `${productName} Supplier in India`,
-            `${productName} Dealer in India`,
-            `${productName} Distributor in India`,
-            `Buy ${productName}`,
-            `${productName} for Laboratory`,
-            `${productName} for Hospital`,
-            `${productName} for Diagnostic Center`,
+            categoryName,
+            brandName,
             "Biomedical Equipment",
-            "Medical Equipment",
-            "Laboratory Equipment",
-            "Diagnostic Equipment",
-            "Hospital Equipment",
-            "Healthcare Equipment",
-            "Central Biomedicals",
+            "Medical Equipment India",
+            "Laboratory Supplies Exporter",
+            "Raj Biosis",
         ],
 
         alternates: {
@@ -48,9 +52,9 @@ export async function generateMetadata({ params }) {
 
         openGraph: {
             title,
-            description,
+            description: description.slice(0, 160),
             url,
-            siteName: "Central Biomedicals",
+            siteName: "Raj Biosis",
             type: "website",
             locale: "en_IN",
         },
@@ -58,7 +62,7 @@ export async function generateMetadata({ params }) {
         twitter: {
             card: "summary_large_image",
             title,
-            description,
+            description: description.slice(0, 160),
         },
 
         robots: {
@@ -73,7 +77,7 @@ export async function generateMetadata({ params }) {
             },
         },
 
-        metadataBase: new URL("https://centralbiomedials.com"),
+        metadataBase: new URL("https://glucostrips.com"),
     };
 }
 

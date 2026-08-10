@@ -4,12 +4,20 @@ import PageBanner from "@/components/PageBanner";
 import SectionTitle from "@/components/SectionTitle";
 import DDS from "@/components/img/Dds.png";
 
+export const metadata = {
+  title: "About Raj Biosis | Medical & Laboratory Equipment Manufacturer India",
+  description: "Learn about Raj Biosis, a trusted manufacturer, exporter, and supplier of biomedical, diagnostic, and laboratory equipment in India.",
+  alternates: {
+    canonical: "https://glucostrips.com/about",
+  },
+};
+
 export default function AboutPage() {
   return (
     <>
       {/* Banner */}
       <PageBanner
-        title="About Central Biomedicals"
+        title="About Raj Biosis"
         subtitle="Delivering trusted diagnostic and biomedical technologies with innovation, quality, and healthcare precision."
       />
 
@@ -19,15 +27,15 @@ export default function AboutPage() {
 
           {/* Left Image */}
           <div className="relative">
-       <div className="rounded-[40px] overflow-hidden card-shadow bg-slate-100 h-[600px] flex items-center justify-center p-10">
-  <Image
-    src={DDS}
-    alt="About"
-    width={1200}
-    height={900}
-    className="max-w-full max-h-full object-contain"
-  />
-</div>
+            <div className="rounded-[40px] overflow-hidden card-shadow bg-slate-100 h-[600px] flex items-center justify-center p-10">
+              <Image
+                src={DDS}
+                alt="About"
+                width={1200}
+                height={900}
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
 
             {/* Floating Card */}
             <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur-md p-6 rounded-[26px] shadow-2xl border border-slate-100/80 hidden lg:block">
@@ -50,7 +58,7 @@ export default function AboutPage() {
             />
 
             <p className="mt-8 text-slate-600 leading-8">
-              At Central Biomedicals,
+              At Raj Biosis,
               we are committed to
               delivering premium-quality
               healthcare and biomedical

@@ -10,6 +10,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   const [contactInfo, setContactInfo] =
@@ -45,7 +46,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "glucostripscom",
             "pages",
             "contact"
           )
@@ -76,7 +77,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "glucostripscom",
             "districts",
             district
           )
@@ -93,26 +94,46 @@ export default function Footer() {
     loadDistrict();
   }, [district]);
 
-  const phone =
-    contactInfo.find(
-      (x) => x.label === "Phone Number"
-    )?.value || "";
 
-  const email =
-    contactInfo.find(
-      (x) => x.label === "Email Address"
-    )?.value || "";
 
-  const address =
-    contactInfo.find(
-      (x) => x.label === "Office Address"
-    )?.value || "";
+  const getContactValue = (...labels) => {
+    const item = contactInfo.find((x) =>
+      labels.some(
+        (label) =>
+          String(x.label || "").trim().toLowerCase() ===
+          label.trim().toLowerCase()
+      )
+    );
 
-  const dynamicAddress =
-    districtData
-      ? `${districtData.district}, ${districtData.state}, India`
-      : address;
+    return item?.value || "";
+  };
 
+  const phone = getContactValue(
+    "Phone",
+    "Phone Number",
+    "Mobile",
+    "Mobile Number"
+  );
+
+  const email = getContactValue(
+    "Email",
+    "Email Address"
+  );
+
+  const address = getContactValue(
+    "Address",
+    "Office Address"
+  );
+
+  const workingHours = getContactValue(
+    "Working Hours",
+    "Business Hours",
+    "Opening Hours"
+  );
+
+  const dynamicAddress = districtData
+    ? `${districtData.district}, ${districtData.state}, India`
+    : address;
   const makeLink = (path) => {
     if (!district) return path;
 
@@ -156,15 +177,15 @@ export default function Footer() {
     <footer className="bg-white border-t border-slate-200">
       <div className="container-custom py-16">
 
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10">
+        <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-10">
 
           <div>
             <h2 className="text-2xl font-bold flex items-center">
               <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-                Central
+                Raj
               </span>
               <span className="text-slate-900 font-semibold">
-                {" "}Biomedicals
+                {" "}Biosis
               </span>
             </h2>
 
@@ -174,6 +195,25 @@ export default function Footer() {
               innovation, quality, and
               precision healthcare support.
             </p>
+
+            <div className="flex gap-4 mt-6">
+              <a
+                href="https://www.facebook.com/rajbiosispvtltd/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-650 hover:border-indigo-200 hover:bg-white hover:shadow-md transition duration-200 shadow-sm"
+              >
+                <FaFacebook size={18} />
+              </a>
+              <a
+                href="https://www.instagram.com/rajbiosisindia/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-650 hover:border-indigo-200 hover:bg-white hover:shadow-md transition duration-200 shadow-sm"
+              >
+                <FaInstagram size={18} />
+              </a>
+            </div>
           </div>
 
           <div>
@@ -199,6 +239,18 @@ export default function Footer() {
                 Products
               </Link>
 
+              {/* <Link href="/export" className="hover:text-indigo-600 transition-colors duration-200">
+                B2B Export
+              </Link>
+
+              <Link href="/export/africa" className="hover:text-indigo-600 transition-colors duration-200">
+                Export to Africa
+              </Link>
+
+              <Link href="/export/middle-east" className="hover:text-indigo-600 transition-colors duration-200">
+                Export to Middle East
+              </Link> */}
+
               <Link href={makeLink("/contact")} className="hover:text-indigo-600 transition-colors duration-200">
                 Contact
               </Link>
@@ -216,6 +268,30 @@ export default function Footer() {
               <p>Laboratory Solutions</p>
               <p>Biomedical Instruments</p>
               <p>Maintenance Support</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-5">
+              Product Categories
+            </h3>
+
+            <div className="flex flex-col gap-3 text-slate-600 font-medium">
+              <Link href={makeLink("/items?category=biochemistry-analyzer")} className="hover:text-indigo-600 transition-colors duration-200">
+                Biochemistry Analyzers
+              </Link>
+              <Link href={makeLink("/items?category=hematology-analyzers")} className="hover:text-indigo-600 transition-colors duration-200">
+                Hematology Analyzers
+              </Link>
+              <Link href={makeLink("/items?category=blood-bank-equipments")} className="hover:text-indigo-600 transition-colors duration-200">
+                Blood Bank Equipments
+              </Link>
+              <Link href={makeLink("/items?category=blood-collection-tubes")} className="hover:text-indigo-600 transition-colors duration-200">
+                Blood Collection Tubes
+              </Link>
+              <Link href={makeLink("/items?category=rapid-test-kit")} className="hover:text-indigo-600 transition-colors duration-200">
+                Rapid Test Kits
+              </Link>
             </div>
           </div>
 
@@ -239,7 +315,9 @@ export default function Footer() {
                   size={18}
                   className="text-indigo-600"
                 />
-                <p>{phone}</p>
+                <a href={`tel:+91${phone}`} className="hover:text-indigo-600 transition">
+                  {phone}
+                </a>
               </div>
 
               <div className="flex items-center gap-3">
@@ -247,7 +325,9 @@ export default function Footer() {
                   size={18}
                   className="text-indigo-600"
                 />
-                <p>{email}</p>
+                <a href={`mailto:${email}`} className="hover:text-indigo-600 transition">
+                  {email}
+                </a>
               </div>
 
             </div>
@@ -258,7 +338,7 @@ export default function Footer() {
         <div className="border-t border-slate-200 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
 
           <p>
-            © 2026 Central Biomedicals.
+            © 2026 Raj Biosis.
             All rights reserved.
           </p>
 

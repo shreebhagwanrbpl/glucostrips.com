@@ -8,7 +8,7 @@ import {
 
 export default async function sitemap() {
     const baseUrl =
-        "https://centralbiomedicals.com";
+        "https://glucostrips.com";
 
     const urls = [];
 
@@ -33,6 +33,18 @@ export default async function sitemap() {
         {
             url: `${baseUrl}/items`,
             lastModified: new Date(),
+        },
+        {
+            url: `${baseUrl}/export`,
+            lastModified: new Date(),
+        },
+        {
+            url: `${baseUrl}/export/africa`,
+            lastModified: new Date(),
+        },
+        {
+            url: `${baseUrl}/export/middle-east`,
+            lastModified: new Date(),
         }
     );
 
@@ -43,7 +55,7 @@ export default async function sitemap() {
                 collection(
                     db,
                     "websites",
-                    "centralbiomedicals",
+                    "glucostripscom",
                     "districts"
                 )
             );
@@ -94,7 +106,7 @@ export default async function sitemap() {
                 doc(
                     db,
                     "websites",
-                    "centralbiomedicals",
+                    "glucostripscom",
                     "pages",
                     "products"
                 )

@@ -42,6 +42,7 @@ export default function Navbar() {
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Products", path: "/items" },
+    // { name: "Export", path: "/export" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -50,13 +51,18 @@ export default function Navbar() {
       <div className="container-custom h-20 flex items-center justify-between">
 
         {/* Logo */}
-        <Link href={makeLink("/")}>
-          <h1 className="text-xl md:text-2xl font-bold flex items-center">
+        <Link href={makeLink("/")} className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Raj Biosis Logo"
+            className="h-10 md:h-12 w-auto object-contain"
+          />
+          <h1 className="text-xl md:text-2xl font-bold flex items-center hidden sm:flex">
             <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-              Central
+              Raj
             </span>
             <span className="text-slate-900 font-semibold">
-              {" "}Biomedicals
+              {" "}Biosis
             </span>
           </h1>
         </Link>

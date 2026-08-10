@@ -30,7 +30,7 @@ export default function HeroSection({ city }) {
     const fetchHeroData = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "centralbiomedicals", "pages", "home")
+          doc(db, "websites", "glucostripscom", "pages", "home")
         );
 
         if (snap.exists()) {
@@ -56,24 +56,31 @@ export default function HeroSection({ city }) {
   };
 
   return (
-    <section className="gradient-bg overflow-hidden relative">
+    <section className="relative overflow-hidden">
       {/* Decorative Blur Background Mesh */}
-      <div className="absolute top-10 right-10 w-[500px] h-[500px] bg-indigo-300/10 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-fuchsia-300/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-indigo-300/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-fuchsia-300/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-purple-300/10 rounded-full blur-3xl" />
+      </div>
 
-      <div className="container-custom min-h-[90vh] py-20 lg:py-12 grid lg:grid-cols-12 gap-12 items-center relative z-10">
+      <div className="container-custom min-h-[90vh] py-20 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
 
-        {/* Left Content */}
+        {/* =========================================================
+            LEFT CONTENT
+        ========================================================= */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="lg:col-span-7"
         >
-
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-fuchsia-50 border border-indigo-100/50 text-indigo-700 px-4.5 py-2 rounded-full text-sm font-semibold mb-8 shadow-sm">
-            <ShieldCheck size={16} className="text-indigo-600 animate-pulse" />
+            <ShieldCheck
+              size={16}
+              className="text-indigo-600 animate-pulse"
+            />
             Trusted Biomedical Systems
           </div>
 
@@ -110,6 +117,7 @@ export default function HeroSection({ city }) {
           ) : (
             <p className="mt-7 text-slate-600 text-lg leading-8 max-w-xl">
               {heroData.description}
+
               {city && (
                 <>
                   {" "}across <strong>{city}</strong>
@@ -127,9 +135,9 @@ export default function HeroSection({ city }) {
               </>
             ) : (
               <>
-                <Link href={makeLink("/services")}>
+                <Link href={makeLink("/items")}>
                   <button className="primary-btn flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 text-white duration-300 shadow-lg shadow-indigo-600/15">
-                    {heroData.button1Text || "Explore Services"}
+                    {heroData.button1Text || "Explore Products"}
                     <ArrowRight size={18} />
                   </button>
                 </Link>
@@ -150,6 +158,7 @@ export default function HeroSection({ city }) {
               <h3 className="text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
                 10+
               </h3>
+
               <p className="text-slate-500 font-medium text-sm mt-1">
                 Years Experience
               </p>
@@ -161,6 +170,7 @@ export default function HeroSection({ city }) {
               <h3 className="text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
                 500+
               </h3>
+
               <p className="text-slate-500 font-medium text-sm mt-1">
                 Products Delivered
               </p>
@@ -172,6 +182,7 @@ export default function HeroSection({ city }) {
               <h3 className="text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
                 100%
               </h3>
+
               <p className="text-slate-500 font-medium text-sm mt-1">
                 Quality Assurance
               </p>
@@ -180,23 +191,27 @@ export default function HeroSection({ city }) {
           </div>
         </motion.div>
 
-        {/* Right Side */}
+        {/* =========================================================
+            RIGHT SIDE IMAGE
+        ========================================================= */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="relative lg:col-span-5 flex justify-center items-center"
+          className="relative lg:col-span-5 w-full flex justify-center items-center"
         >
           {/* Backdrop Glow behind image card */}
           <div className="absolute w-[110%] h-[110%] bg-gradient-to-tr from-indigo-500/10 to-fuchsia-500/10 rounded-[60px] blur-[60px] -z-10 pointer-events-none" />
 
-          <div className="glass-card rounded-[40px] p-4.5 card-shadow border border-white/50 relative overflow-hidden w-full max-w-[480px] lg:max-w-none">
+          {/* Main Image Card */}
+          <div className="glass-card relative w-full max-w-[620px] overflow-hidden rounded-[42px] border border-white/50 p-5 card-shadow">
             <Image
               src={CBG}
-              alt="Central Biomedical"
-              width={1200}
-              height={900}
-              className="rounded-[30px] object-cover object-[20%_center] h-[350px] sm:h-[450px] lg:h-[520px] w-full"
+              alt="Raj Biosis"
+              width={1400}
+              height={1050}
+              priority
+              className="h-[390px] w-full rounded-[32px] object-contain sm:h-[480px] lg:h-[560px]"
             />
           </div>
 
@@ -221,6 +236,7 @@ export default function HeroSection({ city }) {
               <h4 className="font-semibold text-slate-900 text-sm">
                 Modern Labs
               </h4>
+
               <p className="text-xs text-slate-500">
                 Precision Equipment
               </p>
@@ -247,12 +263,12 @@ export default function HeroSection({ city }) {
               <h4 className="font-semibold text-slate-900 text-sm">
                 Trusted Quality
               </h4>
+
               <p className="text-xs text-slate-500">
                 Certified Solutions
               </p>
             </div>
           </motion.div>
-
         </motion.div>
 
       </div>
