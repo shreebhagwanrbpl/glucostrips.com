@@ -29,7 +29,8 @@ export async function generateMetadata({ params }) {
         title,
         description,
         alternates: {
-            canonical: url,
+            // Canonical is self-referential or points to main product page to handle noindex consolidation
+            canonical: `https://glucostrips.com/items/${slug}`,
         },
         openGraph: {
             title,
@@ -37,6 +38,15 @@ export async function generateMetadata({ params }) {
             url,
             type: "website",
         },
+        // Prevent duplicate doorway page indexation by explicitly setting noindex
+        robots: {
+            index: false,
+            follow: true,
+            googleBot: {
+                index: false,
+                follow: true,
+            }
+        }
     };
 }
 

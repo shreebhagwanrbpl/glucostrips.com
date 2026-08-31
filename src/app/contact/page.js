@@ -5,7 +5,7 @@ export const revalidate = 3600; // Revalidate cache every hour
 
 export const metadata = {
   title: "Contact Raj Biosis | Biomedical & Laboratory Suppliers India",
-  description: "Get in touch with Raj Biosis for diagnostic analyzers, biochemistry systems, and medical laboratory equipment. Request a quote or support today.",
+  description: "Speak with our consumables desk for diagnostic analyzers, biochemistry systems, and medical laboratory equipment. Request a quote or support today.",
   alternates: {
     canonical: "https://glucostrips.com/contact",
   },
@@ -21,6 +21,5 @@ export default async function ContactPage() {
   } catch (error) {
     console.error("Error fetching contact details on server:", error);
   }
-
-  return <ContactClient initialContactInfo={contactInfo} />;
+  return <div className="site1-static"><ContactClient initialContactInfo={contactInfo} /></div>;
 }

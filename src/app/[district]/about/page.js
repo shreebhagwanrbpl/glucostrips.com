@@ -7,7 +7,7 @@ export async function generateMetadata({ params }) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
   return {
-    title: `About Raj Biosis in ${city} | Biomedical Equipment Supplier`,
+    title: `About Our Diagnostic & Medical Sourcing Team in ${city} | Raj Biosis`,
     description: `Learn about Raj Biosis in ${city}, India. Premier supplier of diagnostic machines, laboratory systems, and medical equipment.`,
     alternates: {
       canonical: `https://glucostrips.com/${district}/about`,
@@ -21,5 +21,5 @@ export default async function Page({ params }) {
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
-  return <AboutPage city={city} />;
+  return <div className="site1-static"><AboutPage city={city} /></div>;
 }

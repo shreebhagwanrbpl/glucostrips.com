@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -7,8 +8,57 @@ import {
   ArrowRight,
   PhoneCall,
 } from "lucide-react";
+import { fetchContactData } from "@/lib/data-fetcher";
 
 export default function CTASection({ city }) {
+  const [contactInfo, setContactInfo] = useState([]);
+
+  useEffect(() => {
+    const loadContact = async () => {
+      try {
+        const data = await fetchContactData();
+        if (data && Array.isArray(data.contactInfo)) {
+          setContactInfo(data.contactInfo);
+        }
+      } catch (err) {
+        console.error("Error loading contact in CTASection:", err);
+      }
+    };
+    loadContact();
+  }, []);
+
+  const getContactValue = (...labels) => {
+    const item = contactInfo.find((x) =>
+      labels.some(
+        (label) =>
+          String(x.label || "")
+            .trim()
+            .toLowerCase() ===
+          label.trim().toLowerCase()
+      )
+    );
+    return item?.value || "";
+  };
+
+  const phone = getContactValue(
+    "Phone",
+    "Contact Mobile",
+    "Mobile",
+    "Mobile Number"
+  );
+
+  const phoneNumbers = Array.isArray(phone)
+    ? phone.filter(
+        (num) =>
+          num !== null &&
+          num !== undefined &&
+          String(num).trim() !== ""
+      )
+    : phone !== null &&
+      phone !== undefined &&
+      String(phone).trim() !== ""
+      ? [phone]
+      : ["+91 9983123469"];
 
   const pathname = usePathname();
 
@@ -77,16 +127,9 @@ export default function CTASection({ city }) {
                 Get In Touch
               </span>
 
-              <h2 className="text-4xl lg:text-6xl font-extrabold leading-tight">
-                Need Premium Biomedical Solutions?
-              </h2>
+              <h2 className="text-4xl lg:text-6xl font-extrabold leading-tight">Need Bulk Diagnostic & Medical Supplies?</h2>
 
-              <p className="mt-6 text-white/70 text-lg leading-8 max-w-xl">
-                Discover innovative diagnostic
-                systems and trusted biomedical
-                technologies tailored for modern
-                healthcare excellence.
-              </p>
+              <p className="mt-6 text-white/70 text-lg leading-8 max-w-xl">Source high-quality diagnostic kits, laboratory equipment, and medical consumables for your healthcare facility or business.</p>
             </div>
 
             <div className="flex lg:justify-end">
@@ -101,9 +144,7 @@ export default function CTASection({ city }) {
                 </h3>
 
                 <p className="mt-3 text-slate-600 leading-7">
-                  Contact our biomedical experts
-                  for consultation, equipment,
-                  and healthcare support.
+                  Contact our medical supply experts to secure high-quality equipment, diagnostic kits, and medical consumables in bulk.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-8">
@@ -118,12 +159,19 @@ export default function CTASection({ city }) {
                     </button>
                   </Link>
 
-                  <a
-                    href="tel:+919983123469"
-                    className="border border-slate-200 px-6 py-4 rounded-2xl font-semibold hover:bg-slate-50 transition text-center text-slate-700 hover:text-indigo-600 hover:border-indigo-200"
-                  >
-                    Call Now
-                  </a>
+                  {phoneNumbers.map((number, index) => {
+                    const cleanNum = String(number).trim();
+                    const linkNum = cleanNum.replace(/[^\d+]/g, "");
+                    return (
+                      <a
+                        key={`${cleanNum}-${index}`}
+                        href={`tel:${linkNum}`}
+                        className="border border-slate-200 px-6 py-4 rounded-2xl font-semibold hover:bg-slate-50 transition text-center text-slate-700 hover:text-indigo-650 hover:border-indigo-200 flex-1"
+                      >
+                        {phoneNumbers.length > 1 ? `Call: ${cleanNum}` : "Call Now"}
+                      </a>
+                    );
+                  })}
 
                 </div>
 

@@ -338,7 +338,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
       {/* Banner */}
       {/* <PageBanner
         title={city ? `Our Products in ${city}` : "Our Products"}
-        subtitle="Explore advanced biomedical and diagnostic equipment designed for modern healthcare excellence."
+        subtitle="Explore laboratory and diagnostic equipment selected for efficient workflows and contemporary healthcare requirements."
       /> */}
       <script
         type="application/ld+json"
@@ -376,7 +376,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
           <SectionTitle
             badge="Featured Products"
             title="Premium Biomedical Equipment"
-            description="Discover high-quality diagnostic and biomedical technologies tailored for laboratories, healthcare institutions, and modern diagnostics."
+            description="Explore diagnostic technologies and biomedical equipment matched to laboratory routines, institutional needs, and testing applications."
             center
           />
         </div>
@@ -550,7 +550,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
           <SectionTitle
             badge="Why Our Products"
             title="Trusted Quality & Innovation"
-            description="We provide biomedical products designed for performance, reliability, and healthcare excellence."
+            description="Our catalogue brings together biomedical products intended for reliable operation and practical healthcare use."
             center
           />
 

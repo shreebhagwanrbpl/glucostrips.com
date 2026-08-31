@@ -5,19 +5,22 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import {
   Mail,
   Phone,
   MapPin,
 } from "lucide-react";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+
+import {
+  FaFacebook,
+  FaInstagram,
+} from "react-icons/fa";
 
 export default function Footer() {
-  const [contactInfo, setContactInfo] =
-    useState([]);
+  const [contactInfo, setContactInfo] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [districtData, setDistrictData] =
-    useState(null);
+  const [districtData, setDistrictData] = useState(null);
 
   const pathname = usePathname();
 
@@ -38,6 +41,10 @@ export default function Footer() {
       !staticRoutes.includes(pathParts[0])
       ? pathParts[0]
       : "";
+
+  /* =====================================================
+     LOAD CONTACT
+  ===================================================== */
 
   useEffect(() => {
     const loadContact = async () => {
@@ -60,7 +67,11 @@ export default function Footer() {
 
         setLoading(false);
       } catch (err) {
-        console.log(err);
+        console.error(
+          "Error loading contact:",
+          err
+        );
+
         setLoading(false);
       }
     };
@@ -68,9 +79,16 @@ export default function Footer() {
     loadContact();
   }, []);
 
+  /* =====================================================
+     LOAD DISTRICT
+  ===================================================== */
+
   useEffect(() => {
     const loadDistrict = async () => {
-      if (!district) return;
+      if (!district) {
+        setDistrictData(null);
+        return;
+      }
 
       try {
         const snap = await getDoc(
@@ -84,23 +102,32 @@ export default function Footer() {
         );
 
         if (snap.exists()) {
-          setDistrictData(snap.data());
+          setDistrictData(
+            snap.data()
+          );
         }
       } catch (err) {
-        console.log(err);
+        console.error(
+          "Error loading district:",
+          err
+        );
       }
     };
 
     loadDistrict();
   }, [district]);
 
-
+  /* =====================================================
+     CONTACT VALUE HELPER
+  ===================================================== */
 
   const getContactValue = (...labels) => {
     const item = contactInfo.find((x) =>
       labels.some(
         (label) =>
-          String(x.label || "").trim().toLowerCase() ===
+          String(x.label || "")
+            .trim()
+            .toLowerCase() ===
           label.trim().toLowerCase()
       )
     );
@@ -108,16 +135,20 @@ export default function Footer() {
     return item?.value || "";
   };
 
+  /* =====================================================
+     CONTACT DATA
+  ===================================================== */
+
   const phone = getContactValue(
     "Phone",
-    "Phone Number",
+    "Contact Mobile",
     "Mobile",
     "Mobile Number"
   );
 
   const email = getContactValue(
     "Email",
-    "Email Address"
+    "Work Email"
   );
 
   const address = getContactValue(
@@ -125,17 +156,39 @@ export default function Footer() {
     "Office Address"
   );
 
-  const workingHours = getContactValue(
-    "Working Hours",
-    "Business Hours",
-    "Opening Hours"
-  );
+  /* =====================================================
+     MULTIPLE PHONE NUMBERS
+  ===================================================== */
+
+  const phoneNumbers = Array.isArray(phone)
+    ? phone.filter(
+      (number) =>
+        number !== null &&
+        number !== undefined &&
+        String(number).trim() !== ""
+    )
+    : phone !== null &&
+      phone !== undefined &&
+      String(phone).trim() !== ""
+      ? [phone]
+      : [];
+
+  /* =====================================================
+     DISTRICT ADDRESS
+  ===================================================== */
 
   const dynamicAddress = districtData
     ? `${districtData.district}, ${districtData.state}, India`
     : address;
+
+  /* =====================================================
+     ROUTING
+  ===================================================== */
+
   const makeLink = (path) => {
-    if (!district) return path;
+    if (!district) {
+      return path;
+    }
 
     if (path === "/") {
       return `/${district}`;
@@ -143,199 +196,370 @@ export default function Footer() {
 
     return `/${district}${path}`;
   };
+
+  /* =====================================================
+     PHONE LINK
+  ===================================================== */
+
+  const makePhoneLink = (number) => {
+    return String(number).replace(
+      /[^\d+]/g,
+      ""
+    );
+  };
+
+  /* =====================================================
+     LOADING
+  ===================================================== */
+
   if (loading) {
     return (
-      <footer className="bg-white border-t border-slate-200">
+      <footer className="border-t border-slate-200 bg-white">
+
         <div className="container-custom py-16">
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10">
+          <div className="grid gap-10 lg:grid-cols-4 md:grid-cols-2">
 
             {[...Array(4)].map((_, i) => (
               <div key={i}>
-                <div className="h-8 w-40 bg-slate-200 rounded animate-pulse mb-6" />
+
+                <div className="mb-6 h-8 w-40 animate-pulse rounded bg-slate-200" />
 
                 {[...Array(5)].map((_, j) => (
                   <div
                     key={j}
-                    className="h-5 bg-slate-200 rounded animate-pulse mb-4"
+                    className="mb-4 h-5 animate-pulse rounded bg-slate-200"
                   />
                 ))}
+
               </div>
             ))}
 
           </div>
 
-          <div className="border-t border-slate-200 mt-12 pt-6">
-            <div className="h-5 w-72 bg-slate-200 rounded animate-pulse" />
+          <div className="mt-12 border-t border-slate-200 pt-6">
+
+            <div className="h-5 w-72 animate-pulse rounded bg-slate-200" />
+
           </div>
 
         </div>
+
       </footer>
     );
   }
+
+  /* =====================================================
+     FOOTER
+  ===================================================== */
+
   return (
-    <footer className="bg-white border-t border-slate-200">
+    <footer className="border-t border-slate-200 bg-white">
+
       <div className="container-custom py-16">
 
-        <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-10">
+        <div className="grid gap-10 lg:grid-cols-5 md:grid-cols-2">
+
+          {/* =================================================
+              BRAND
+          ================================================= */}
 
           <div>
-            <h2 className="text-2xl font-bold flex items-center">
+
+            <h2 className="flex items-center text-2xl font-bold">
+
               <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
                 Raj
               </span>
-              <span className="text-slate-900 font-semibold">
+
+              <span className="font-semibold text-slate-900">
                 {" "}Biosis
               </span>
+
             </h2>
 
-            <p className="mt-5 text-slate-600 leading-7">
+            <p className="mt-5 leading-7 text-slate-600">
               Delivering trusted diagnostic
               and biomedical solutions with
               innovation, quality, and
               precision healthcare support.
             </p>
 
-            <div className="flex gap-4 mt-6">
+            {/* Social Media */}
+
+            <div className="mt-6 flex gap-4">
+
+              {/* Facebook */}
+
               <a
                 href="https://www.facebook.com/rajbiosispvtltd/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-650 hover:border-indigo-200 hover:bg-white hover:shadow-md transition duration-200 shadow-sm"
+                aria-label="Raj Biosis Facebook"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-[#1877F2] shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:bg-blue-50 hover:shadow-md"
               >
                 <FaFacebook size={18} />
               </a>
+
+              {/* Instagram */}
+
               <a
                 href="https://www.instagram.com/rajbiosisindia/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-650 hover:border-indigo-200 hover:bg-white hover:shadow-md transition duration-200 shadow-sm"
+                aria-label="Raj Biosis Instagram"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-[#E4405F] shadow-sm transition duration-200 hover:-translate-y-1 hover:border-pink-200 hover:bg-pink-50 hover:shadow-md"
               >
                 <FaInstagram size={18} />
               </a>
+
             </div>
+
           </div>
 
+          {/* =================================================
+              QUICK LINKS
+          ================================================= */}
+
           <div>
-            <h3 className="text-lg font-semibold mb-5">
+
+            <h3 className="mb-5 text-lg font-semibold">
               Quick Links
             </h3>
 
-            <div className="flex flex-col gap-3 text-slate-600 font-medium">
+            <div className="flex flex-col gap-3 font-medium text-slate-600">
 
-              <Link href={makeLink("/")} className="hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                href={makeLink("/")}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Home
               </Link>
 
-              <Link href={makeLink("/about")} className="hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                href={makeLink("/about")}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 About
               </Link>
 
-              <Link href={makeLink("/services")} className="hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                href={makeLink("/services")}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Services
               </Link>
 
-              <Link href={makeLink("/items")} className="hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                href={makeLink("/items")}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Products
               </Link>
 
-              {/* <Link href="/export" className="hover:text-indigo-600 transition-colors duration-200">
-                B2B Export
-              </Link>
-
-              <Link href="/export/africa" className="hover:text-indigo-600 transition-colors duration-200">
-                Export to Africa
-              </Link>
-
-              <Link href="/export/middle-east" className="hover:text-indigo-600 transition-colors duration-200">
-                Export to Middle East
-              </Link> */}
-
-              <Link href={makeLink("/contact")} className="hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                href={makeLink("/contact")}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Contact
               </Link>
 
             </div>
+
           </div>
 
+          {/* =================================================
+              SERVICES
+          ================================================= */}
+
           <div>
-            <h3 className="text-lg font-semibold mb-5">
+
+            <h3 className="mb-5 text-lg font-semibold">
               Services
             </h3>
 
             <div className="flex flex-col gap-3 text-slate-600">
-              <p>Diagnostic Equipment</p>
-              <p>Laboratory Solutions</p>
-              <p>Biomedical Instruments</p>
-              <p>Maintenance Support</p>
+
+              <p>Diagnostic Kits</p>
+
+              <p>Laboratory Equipment</p>
+
+              <p>Medical Consumables</p>
+
+              <p>Setup & Support</p>
+
             </div>
+
           </div>
 
+          {/* =================================================
+              PRODUCT CATEGORIES
+          ================================================= */}
+
           <div>
-            <h3 className="text-lg font-semibold mb-5">
+
+            <h3 className="mb-5 text-lg font-semibold">
               Product Categories
             </h3>
 
-            <div className="flex flex-col gap-3 text-slate-600 font-medium">
-              <Link href={makeLink("/items?category=biochemistry-analyzer")} className="hover:text-indigo-600 transition-colors duration-200">
+            <div className="flex flex-col gap-3 font-medium text-slate-600">
+
+              <Link
+                href={makeLink(
+                  "/items?category=biochemistry-analyzer"
+                )}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Biochemistry Analyzers
               </Link>
-              <Link href={makeLink("/items?category=hematology-analyzers")} className="hover:text-indigo-600 transition-colors duration-200">
+
+              <Link
+                href={makeLink(
+                  "/items?category=hematology-analyzers"
+                )}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Hematology Analyzers
               </Link>
-              <Link href={makeLink("/items?category=blood-bank-equipments")} className="hover:text-indigo-600 transition-colors duration-200">
+
+              <Link
+                href={makeLink(
+                  "/items?category=blood-bank-equipments"
+                )}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Blood Bank Equipments
               </Link>
-              <Link href={makeLink("/items?category=blood-collection-tubes")} className="hover:text-indigo-600 transition-colors duration-200">
+
+              <Link
+                href={makeLink(
+                  "/items?category=blood-collection-tubes"
+                )}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Blood Collection Tubes
               </Link>
-              <Link href={makeLink("/items?category=rapid-test-kit")} className="hover:text-indigo-600 transition-colors duration-200">
+
+              <Link
+                href={makeLink(
+                  "/items?category=rapid-test-kit"
+                )}
+                className="transition-colors duration-200 hover:text-indigo-600"
+              >
                 Rapid Test Kits
               </Link>
+
             </div>
+
           </div>
 
+          {/* =================================================
+              CONTACT INFO
+          ================================================= */}
+
           <div>
-            <h3 className="text-lg font-semibold mb-5">
+
+            <h3 className="mb-5 text-lg font-semibold">
               Contact Info
             </h3>
 
-            <div className="space-y-4 text-slate-600 font-medium">
+            <div className="space-y-4 font-medium text-slate-600">
+
+              {/* ADDRESS */}
 
               <div className="flex items-start gap-3">
+
                 <MapPin
                   size={18}
-                  className="mt-1 text-indigo-600"
+                  className="mt-1 shrink-0 text-indigo-600"
                 />
-                <p>{dynamicAddress}</p>
+
+                <p>
+                  {dynamicAddress}
+                </p>
+
               </div>
 
-              <div className="flex items-center gap-3">
+              {/* MULTIPLE PHONE NUMBERS */}
+
+              <div className="flex items-start gap-3">
+
                 <Phone
                   size={18}
-                  className="text-indigo-600"
+                  className="mt-1 shrink-0 text-indigo-600"
                 />
-                <a href={`tel:+91${phone}`} className="hover:text-indigo-600 transition">
-                  {phone}
-                </a>
+
+                <div className="flex flex-col gap-2">
+
+                  {phoneNumbers.length > 0 ? (
+
+                    phoneNumbers.map(
+                      (number, index) => {
+
+                        const phoneText =
+                          String(number);
+
+                        return (
+                          <a
+                            key={`${phoneText}-${index}`}
+                            href={`tel:${makePhoneLink(
+                              phoneText
+                            )}`}
+                            className="transition-colors duration-200 hover:text-indigo-600"
+                          >
+                            {phoneText}
+                          </a>
+                        );
+                      }
+                    )
+
+                  ) : (
+
+                    <span>
+                      Contact us
+                    </span>
+
+                  )}
+
+                </div>
+
               </div>
 
-              <div className="flex items-center gap-3">
+              {/* EMAIL */}
+
+              <div className="flex items-start gap-3">
+
                 <Mail
                   size={18}
-                  className="text-indigo-600"
+                  className="mt-1 shrink-0 text-indigo-600"
                 />
-                <a href={`mailto:${email}`} className="hover:text-indigo-600 transition">
-                  {email}
-                </a>
+
+                {email ? (
+                  <a
+                    href={`mailto:${email}`}
+                    className="break-all transition-colors duration-200 hover:text-indigo-600"
+                  >
+                    {email}
+                  </a>
+                ) : (
+                  <span>
+                    Email us
+                  </span>
+                )}
+
               </div>
 
             </div>
+
           </div>
 
         </div>
 
-        <div className="border-t border-slate-200 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
+        {/* =================================================
+            BOTTOM
+        ================================================= */}
+
+        <div className="mt-12 flex flex-col items-center justify-between border-t border-slate-200 pt-6 text-sm text-slate-500 md:flex-row">
 
           <p>
             © 2026 Raj Biosis.
@@ -350,6 +574,7 @@ export default function Footer() {
         </div>
 
       </div>
+
     </footer>
   );
 }

@@ -1,21 +1,12 @@
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import dynamic from "next/dynamic";
 
-import HeroSection from "@/components/HeroSection";
-import TrustedBrands from "@/components/TrustedBrands";
-import FeaturedProducts from "@/components/FeaturedProducts";
-import WhyChooseUs from "@/components/WhyChooseUs";
-import StatsSection from "@/components/StatsSection";
-import ServicesPreview from "@/components/ServicesPreview";
-import Testimonials from "@/components/Testimonials";
-import CTASection from "@/components/CTASection";
-import SeoContent from "@/components/SeoContent";
+const HomeLayout = dynamic(() => import("@/components/HomeLayout"), { ssr: true });
 
 export const metadata = {
-  title:
-    "Biomedical & Diagnostic Laboratory Equipment | Raj Biosis India",
+  title: "Diagnostic, Medical & Laboratory Supplies | Raj Biosis",
 
-  description:
-    "Raj Biosis is a leading biomedical supplier, diagnostic manufacturer, and exporter in India. Sourcing CBC machines, hematology analyzers, biochemistry analyzers, and test strips globally.",
+  description: "Raj Biosis is a leading supplier of diagnostic kits, laboratory equipment, medical consumables, and laboratory diagnostics. We source genuine medical supplies for healthcare entities across India.",
 
   alternates: {
     canonical: "https://glucostrips.com",
@@ -23,31 +14,8 @@ export const metadata = {
 };
 
 export default async function Home({ city = "" }) {
-  // Use the SAME catalog fetch used by the working Products page
+  // Fetch products
   const allProducts = await fetchFullCatalog();
 
-  return (
-    <>
-      <HeroSection city={city} />
-
-      <TrustedBrands />
-
-      <FeaturedProducts
-        city={city}
-        initialProducts={allProducts}
-      />
-
-      <WhyChooseUs />
-
-      <StatsSection />
-
-      <ServicesPreview />
-
-      <Testimonials />
-
-      <CTASection />
-
-      <SeoContent city={city} />
-    </>
-  );
+  return <div className="site1-static"><HomeLayout city={city} allProducts={allProducts} /></div>;
 }

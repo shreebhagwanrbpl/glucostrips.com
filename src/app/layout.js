@@ -14,28 +14,23 @@ export const metadata = {
     apple: "/logo.png",
   },
 
-  title:
-    "Biomedical Equipment Supplier in India | Raj Biosis",
+  title: "Diagnostic, Medical & Laboratory Supplies | Raj Biosis",
 
-  description:
-    "Raj Biosis supplies CBC Machines, Hematology Analyzers, Biochemistry Analyzers, ELISA Readers and laboratory equipment across India.",
+  description: "Raj Biosis supplies premium diagnostic kits, laboratory equipment, medical consumables, and laboratory diagnostics to hospitals, clinics, and home users across India.",
 
   keywords: [
-    "Biomedical Equipment Supplier",
-    "Laboratory Equipment Supplier",
-    "CBC Machine Supplier",
-    "Hematology Analyzer Supplier",
-    "Biochemistry Analyzer Supplier",
-    "Diagnostic Equipment Supplier",
-    "Medical Equipment Supplier India",
+    "Diagnostic Supplies",
+    "Medical Consumables",
+    "Laboratory Equipment",
+    "Laboratory Diagnostics",
+    "Biomedical Equipment",
+    "Medical Supplies India",
   ],
 
   openGraph: {
-    title:
-      "Biomedical Equipment Supplier in India | Raj Biosis",
+    title: "Diagnostic, Medical & Laboratory Supplies | Raj Biosis",
 
-    description:
-      "Supplier of biomedical and laboratory equipment across India.",
+    description: "Premium supplier of diagnostics and medical equipment across India.",
 
     url: "https://glucostrips.com",
 
@@ -57,11 +52,9 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title:
-      "Biomedical Equipment Supplier in India | Raj Biosis",
+    title: "Diagnostic, Medical & Laboratory Supplies | Raj Biosis",
 
-    description:
-      "Supplier of biomedical and laboratory equipment across India.",
+    description: "Premium supplier of diagnostics and medical equipment across India.",
 
     images: ["/logo.png"],
   },

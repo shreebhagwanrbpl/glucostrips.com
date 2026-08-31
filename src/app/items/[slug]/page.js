@@ -1,5 +1,6 @@
 import ProductDetails from "./ProductDetails";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import { calculateSeoScore } from "@/lib/seo-helper";
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
@@ -26,6 +27,21 @@ export async function generateMetadata({ params }) {
     const description = product?.description || product?.desc || `Buy ${productName} from Raj Biosis. Trusted manufacturer, supplier and exporter of medical diagnostic reagents, biochemistry instruments and laboratory kits.`;
 
     const url = `https://glucostrips.com/items/${slug}`;
+
+    // Quality gate score calculation
+    const score = calculateSeoScore("product", {
+        title,
+        description,
+        canonical: url,
+        category: categoryName,
+        hasLinks: true,
+        hasSchema: true,
+        hasImages: product?.images?.length > 0 || !!product?.image,
+        hasCleanAlts: true,
+    });
+
+    // Page must exist and score must be >= 50 to index
+    const isIndexable = !!product && score >= 50;
 
     return {
         title,
@@ -66,10 +82,10 @@ export async function generateMetadata({ params }) {
         },
 
         robots: {
-            index: true,
+            index: isIndexable,
             follow: true,
             googleBot: {
-                index: true,
+                index: isIndexable,
                 follow: true,
                 "max-video-preview": -1,
                 "max-image-preview": "large",

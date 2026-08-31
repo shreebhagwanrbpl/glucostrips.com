@@ -30,7 +30,7 @@ const ProductCard = React.memo(function ProductCard({ product, district }) {
                     <p className="mt-4 text-slate-600 leading-8">
                         {product.description ||
                             product.desc ||
-                            "Premium biomedical equipment designed for laboratories, hospitals and diagnostic centres."}
+                            "Professional biomedical equipment for laboratory benches, hospital departments, and diagnostic centres."}
                     </p>
                     <div className="grid md:grid-cols-2 gap-4 mt-6">
                         <div className="bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50 border border-indigo-100 rounded-xl p-4 hover:border-fuchsia-200 transition">

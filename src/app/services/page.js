@@ -11,7 +11,7 @@ export const metadata = {
   },
 };
 
-export default async function ServicesPage() {
+export default async function ServicesPage({ city = "" }) {
   let services = [];
   try {
     const data = await fetchServicesData();
@@ -21,6 +21,5 @@ export default async function ServicesPage() {
   } catch (error) {
     console.error("Error fetching services on server:", error);
   }
-
-  return <ServicesClient services={services} />;
+  return <div className="site1-static"><ServicesClient services={services} city={city} /></div>;
 }

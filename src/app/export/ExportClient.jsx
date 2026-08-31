@@ -45,7 +45,7 @@ export default function ExportClient() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!form.name.trim()) return toast.error("Full Name is required");
+    if (!form.name.trim()) return toast.error("Contact Name is required");
     if (!form.company.trim()) return toast.error("Company Name is required");
     if (!form.country.trim()) return toast.error("Country is required");
     if (!emailRegex.test(form.email)) return toast.error("Enter a valid email address");
@@ -200,7 +200,7 @@ export default function ExportClient() {
                 <input
                   type="text"
                   name="name"
-                  placeholder="Full Name *"
+                  placeholder="Contact Name *"
                   value={form.name}
                   onChange={handleChange}
                   className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-2xl outline-none focus:border-indigo-600 text-slate-800 text-sm"

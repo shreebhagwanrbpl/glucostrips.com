@@ -6,7 +6,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 
 import { usePathname } from "next/navigation";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { fetchFullCatalog, fetchContactData } from "@/lib/data-fetcher";
 import { jsPDF } from "jspdf";
 
 import {
@@ -52,7 +52,73 @@ export default function ProductDetails({ slug }) {
         useState(false);
     const [brochureGenerating, setBrochureGenerating] =
         useState(false);
+    const [contactInfo, setContactInfo] = useState([]);
     const pathname = usePathname();
+
+    useEffect(() => {
+        const loadContact = async () => {
+            try {
+                const data = await fetchContactData();
+                if (data && Array.isArray(data.contactInfo)) {
+                    setContactInfo(data.contactInfo);
+                }
+            } catch (err) {
+                console.error("Error loading contact details:", err);
+            }
+        };
+        loadContact();
+    }, []);
+
+    const getContactValue = (...labels) => {
+        const item = contactInfo.find((x) =>
+            labels.some(
+                (label) =>
+                    String(x.label || "")
+                        .trim()
+                        .toLowerCase() ===
+                    label.trim().toLowerCase()
+            )
+        );
+        return item?.value || "";
+    };
+
+    const phone = getContactValue(
+        "Phone",
+        "Contact Mobile",
+        "Mobile",
+        "Mobile Number"
+    );
+
+    const email = getContactValue(
+        "Email",
+        "Work Email"
+    );
+
+    const phoneNumbers = Array.isArray(phone)
+        ? phone.filter(
+              (num) =>
+                  num !== null &&
+                  num !== undefined &&
+                  String(num).trim() !== ""
+          )
+        : phone !== null &&
+          phone !== undefined &&
+          String(phone).trim() !== ""
+          ? [phone]
+          : ["+91 9983123469"];
+
+    const emails = Array.isArray(email)
+        ? email.filter(
+              (em) =>
+                  em !== null &&
+                  em !== undefined &&
+                  String(em).trim() !== ""
+          )
+        : email !== null &&
+          email !== undefined &&
+          String(email).trim() !== ""
+          ? [email]
+          : ["rajbiosis@yahoo.in"];
 
     const pathParts = pathname
         .split("/")
@@ -180,10 +246,34 @@ export default function ProductDetails({ slug }) {
             mainEntity: [
                 {
                     "@type": "Question",
-                    name: `What is ${product.title} used for?`,
+                    name: `What is ${product.title} used for in ${cityName}?`,
                     acceptedAnswer: {
                         "@type": "Answer",
-                        text: `${product.title} is used in hospitals, pathology labs, diagnostic centres, and research facilities.`,
+                        text: `${product.title} is commonly used in hospitals, pathology laboratories and diagnostic centres.`,
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: `What is the price of ${product.title} in ${cityName}?`,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Pricing depends on specifications, brand and model. Contact us for a quote.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: `Are you an authorized supplier of ${product.title}?`,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "We supply genuine biomedical and laboratory equipment from trusted brands.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: `Can hospitals in ${cityName} order this product?`,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Yes. Healthcare institutions, pathology labs, diagnostic centres, and hospitals may enquire about ordering this product.",
                     },
                 },
                 {
@@ -191,7 +281,39 @@ export default function ProductDetails({ slug }) {
                     name: "Do you provide installation support?",
                     acceptedAnswer: {
                         "@type": "Answer",
-                        text: "Yes, expert installation, calibration, and technical support are available globally.",
+                        text: "Yes, installation and technical support are available depending on the product.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: "Can I request a quotation?",
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Yes, you can submit the enquiry form on this page to receive pricing and product information.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: "Do you provide warranty?",
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Applicable warranty terms are determined by the manufacturer and individual product model.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: "Do you deliver across India?",
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Yes, we supply products across India with safe packaging and logistics support.",
+                    },
+                },
+                {
+                    "@type": "Question",
+                    name: "How can I contact Raj Biosis?",
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Submit an enquiry online or speak with our team for product specifications, availability, and pricing.",
                     },
                 },
             ],
@@ -558,7 +680,8 @@ ${product?.desc}
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(7.2);
             pdf.setTextColor(255, 255, 255);
-            pdf.text("Phone: +91 9983123469", pageWidth - margin, 10, {
+            const pdfPhone = phoneNumbers[0] || "+91 9983123469";
+            pdf.text(`Phone: ${pdfPhone}`, pageWidth - margin, 10, {
                 align: "right",
             });
 
@@ -1120,7 +1243,7 @@ ${product?.desc}
 
                                     <Image
                                         src={img}
-                                        alt=""
+                                        alt={`${product.title} Thumbnail ${index + 1}`}
                                         width={80}
                                         height={80}
                                         className="w-full h-full object-cover"
@@ -1763,18 +1886,29 @@ ${product?.desc}
                                 For quick quotes, corporate procurement queries, or technical manuals, feel free to reach out to our team.
                             </p>
                             <div className="mt-4 space-y-2 text-xs font-semibold text-slate-700">
-                                <div className="flex items-center gap-2">
-                                    <span>📞</span>
-                                    <a href="tel:+919983123469" className="hover:text-indigo-650 transition">
-                                        +91 9983123469
-                                    </a>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span>✉</span>
-                                    <a href="mailto:rajbiosis@yahoo.in" className="hover:text-indigo-650 transition">
-                                        rajbiosis@yahoo.in
-                                    </a>
-                                </div>
+                                {phoneNumbers.map((number, idx) => {
+                                    const cleanNum = String(number).trim();
+                                    const linkNum = cleanNum.replace(/[^\d+]/g, "");
+                                    return (
+                                        <div key={`phone-${idx}`} className="flex items-center gap-2">
+                                            <span>📞</span>
+                                            <a href={`tel:${linkNum}`} className="hover:text-indigo-650 transition">
+                                                {cleanNum}
+                                            </a>
+                                        </div>
+                                    );
+                                })}
+                                {emails.map((em, idx) => {
+                                    const cleanEmail = String(em).trim();
+                                    return (
+                                        <div key={`email-${idx}`} className="flex items-center gap-2">
+                                            <span>✉</span>
+                                            <a href={`mailto:${cleanEmail}`} className="hover:text-indigo-650 transition">
+                                                {cleanEmail}
+                                            </a>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                         <div className="pt-4 mt-4 border-t border-slate-100 text-xs text-orange-500 font-semibold">

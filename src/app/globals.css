@@ -235,3 +235,20 @@ header {
       transparent);
   animation: shimmer 1.8s infinite;
 }
+
+
+/* SITE 1 — editorial navy / amber */
+.site1-static{--sv-accent:#d97706;--sv-deep:#172554;--sv-soft:#fffbeb;background:#fafaf9}
+.site1-static h1,.site1-static h2,.site1-static h3{font-family:Georgia,serif;letter-spacing:-.02em}
+.site1-static section{background-color:#fafaf9}
+.site1-static section:nth-of-type(even){background:#f3f4f6!important}
+.site1-static .container-custom{max-width:1240px}
+.site1-static .rounded-3xl,.site1-static .rounded-\[40px\]{border-radius:6px!important}
+.site1-static .card-shadow{box-shadow:0 14px 34px rgba(23,37,84,.10)!important}
+.site1-static .bg-white{background:#fff!important}
+.site1-static button{border-radius:4px!important;letter-spacing:.02em}
+.site1-static input,.site1-static textarea{border-radius:4px!important;background:#fff!important}
+.site1-static section:has(form) .container-custom{grid-template-columns:.75fr 1.25fr}
+.site1-static section:has(form) .container-custom>div:last-child{border-top:5px solid var(--sv-accent);padding-top:24px}
+.site1-static iframe{filter:saturate(.65) contrast(1.04);border-radius:6px!important}
+

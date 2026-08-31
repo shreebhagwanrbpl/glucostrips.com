@@ -57,14 +57,6 @@ export default function Navbar() {
             alt="Raj Biosis Logo"
             className="h-10 md:h-12 w-auto object-contain"
           />
-          <h1 className="text-xl md:text-2xl font-bold flex items-center hidden sm:flex">
-            <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-              Raj
-            </span>
-            <span className="text-slate-900 font-semibold">
-              {" "}Biosis
-            </span>
-          </h1>
         </Link>
 
         {/* Desktop Menu */}

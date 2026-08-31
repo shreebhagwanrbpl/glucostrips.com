@@ -222,7 +222,7 @@ export default function FeaturedProducts({
                   <p className="text-slate-600 text-[15px] leading-7 mb-8 line-clamp-3">
                     {product.description ||
                       product.desc ||
-                      "Premium biomedical equipment designed for laboratories, hospitals and diagnostic centres."}
+                      "Professional biomedical equipment for laboratory benches, hospital departments, and diagnostic centres."}
                   </p>
 
                 </div>

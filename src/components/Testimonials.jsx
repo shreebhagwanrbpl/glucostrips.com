@@ -7,22 +7,22 @@ export default function Testimonials() {
   const reviews = [
     {
       name: "Dr. Rajesh Kumar",
-      role: "Healthcare Specialist",
+      role: "Clinical Diagnostics Director",
       review:
-        "Raj Biosis has consistently delivered reliable diagnostic equipment with outstanding support.",
+        "Sourcing biochemistry analyzers and diagnostic kits in bulk has been seamless since we partnered with them.",
     },
     {
       name: "Amit Sharma",
-      role: "Lab Director",
+      role: "Hospital Procurement Manager",
       review:
-        "Professional service, premium products, and excellent biomedical consultation experience.",
+        "Excellent calibration and maintenance services. The diagnostic systems perform with high reliability.",
     },
     {
       name: "Neha Verma",
-      role: "Research Head",
+      role: "Purchasing Agent",
       review:
-        "Their healthcare solutions improved our laboratory efficiency significantly.",
-    },
+        "The laboratory reagents and bulk consumables arrived on time, in perfect temperature-controlled packaging.",
+    }
   ];
 
   return (
@@ -30,9 +30,9 @@ export default function Testimonials() {
       <div className="container-custom">
 
         <SectionTitle
-          badge="Testimonials"
-          title="What Our Clients Say"
-          description="Trusted by healthcare professionals, laboratories, and biomedical institutions."
+          badge="Client Reviews"
+          title="What Customers Say"
+          description="Trusted by diagnostic networks, hospitals, and clinical laboratories across the country."
           center
         />
 

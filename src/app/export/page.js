@@ -9,5 +9,5 @@ export const metadata = {
 };
 
 export default function ExportPage() {
-  return <ExportClient />;
+  return <div className="site1-static"><ExportClient /></div>;
 }

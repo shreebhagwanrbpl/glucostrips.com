@@ -15,28 +15,28 @@ export default function ServicesPreview() {
   const services = [
     {
       icon: <Microscope size={30} />,
-      title: "Diagnostic Equipment",
+      title: "Diagnostic Consumables",
       description:
-        "Advanced diagnostic systems designed for accurate and efficient healthcare testing.",
+        "Sourcing biochemistry reagents, diagnostic kits, and clinical consumables in bulk.",
     },
     {
       icon: <FlaskConical size={30} />,
-      title: "Laboratory Solutions",
+      title: "Laboratory Equipment",
       description:
-        "Reliable laboratory instruments and biomedical support for modern medical environments.",
+        "Supplying chemistry analyzers, hematology systems, and medical diagnostic instruments.",
     },
     {
       icon: <ShieldCheck size={30} />,
-      title: "Maintenance Support",
+      title: "Compatibility Guidance",
       description:
-        "Professional technical support and maintenance for biomedical systems.",
+        "Expert support to match compatible reagents, strips, and consumables with existing diagnostic setups.",
     },
     {
       icon: <Stethoscope size={30} />,
-      title: "Healthcare Consultation",
+      title: "Quality Verification",
       description:
-        "Expert guidance and consultation for healthcare and biomedical operations.",
-    },
+        "Sourcing fresh batches with long shelf-life documentation and batch tracking.",
+    }
   ];
 
   return (
@@ -45,9 +45,9 @@ export default function ServicesPreview() {
 
         {/* Title */}
         <SectionTitle
-          badge="Our Services"
-          title="Premium Diagnostic & Biomedical Services"
-          description="Providing advanced healthcare technologies, laboratory systems, and trusted biomedical solutions for modern diagnostics."
+          badge="Consumables & Supply Services"
+          title="Diagnostic Technology & Laboratory Services"
+          description="We help laboratories access modern diagnostic technologies, suitable laboratory systems, and dependable biomedical support."
           center
         />
 

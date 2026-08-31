@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function MiddleEastExportPage() {
   return (
-    <>
+    <div className="site1-static">
       <ExportClient />
       
       {/* Middle East Market Details Section */}
@@ -47,6 +47,6 @@ export default function MiddleEastExportPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
