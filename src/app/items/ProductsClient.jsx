@@ -237,16 +237,32 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
 
-  // Handle category query parameter filtering & auto-scrolling
+  // Handle category / subcategory query parameter filtering & auto-scrolling
   useEffect(() => {
     if (categoryParam && Object.keys(sortedGroupedProducts).length > 0) {
+      const normalizedParam = categoryParam.toLowerCase().replace(/[^a-z0-9]+/g, "-");
       const foundCategory = Object.keys(sortedGroupedProducts).find(
-        (cat) => cat.toLowerCase().replace(/[^a-z0-9]+/g, "-") === categoryParam.toLowerCase()
+        (cat) => cat.toLowerCase().replace(/[^a-z0-9]+/g, "-") === normalizedParam ||
+                 cat.toLowerCase() === categoryParam.toLowerCase()
       );
       if (foundCategory) {
         setOpenedCategory(foundCategory);
         setActiveCategory(foundCategory);
         setPendingScroll(foundCategory.replace(/\s+/g, "-").toLowerCase());
+      } else {
+        for (const [cat, subObj] of Object.entries(sortedGroupedProducts)) {
+          const foundSub = Object.keys(subObj).find(
+            (sub) => sub.toLowerCase().replace(/[^a-z0-9]+/g, "-") === normalizedParam ||
+                     sub.toLowerCase() === categoryParam.toLowerCase()
+          );
+          if (foundSub) {
+            setOpenedCategory(cat);
+            setActiveCategory(cat);
+            setOpenedSubCategories((prev) => ({ ...prev, [`${cat}-${foundSub}`]: true }));
+            setPendingScroll(foundSub.replace(/\s+/g, "-").toLowerCase());
+            break;
+          }
+        }
       }
     }
   }, [categoryParam, sortedGroupedProducts]);
@@ -510,7 +526,11 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                     <div className="space-y-12">
                       {Object.entries(subcategoriesObj).map(
                         (([subCategory, list]) => (
-                          <div key={subCategory} className="space-y-6">
+                          <div
+                            key={subCategory}
+                            id={subCategory.replace(/\s+/g, "-").toLowerCase()}
+                            className="space-y-6 scroll-mt-28"
+                          >
                             {/* Subcategory Heading */}
                             <div className="flex items-center gap-3">
                               <h3 className="text-xl font-bold text-slate-800 uppercase tracking-wide">

@@ -1,7 +1,6 @@
 "use client";
+import { db, addDoc, collection } from "@/lib/api-data-client";
 import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import toast from "react-hot-toast";
 import { 
   Globe, 

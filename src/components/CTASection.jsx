@@ -127,9 +127,9 @@ export default function CTASection({ city }) {
                 Get In Touch
               </span>
 
-              <h2 className="text-4xl lg:text-6xl font-extrabold leading-tight">Need Bulk Diagnostic & Medical Supplies?</h2>
+              <h2 className="text-4xl lg:text-6xl font-extrabold leading-tight">Planning a Biomedical Purchase?</h2>
 
-              <p className="mt-6 text-white/70 text-lg leading-8 max-w-xl">Source high-quality diagnostic kits, laboratory equipment, and medical consumables for your healthcare facility or business.</p>
+              <p className="mt-6 text-white/70 text-lg leading-8 max-w-xl">Send one requirement covering instruments, kits, reagents, accessories or recurring consumables and discuss suitable product options with our team.</p>
             </div>
 
             <div className="flex lg:justify-end">
@@ -140,11 +140,11 @@ export default function CTASection({ city }) {
                 </div>
 
                 <h3 className="text-2xl font-bold text-slate-950">
-                  Let’s Talk
+                  Discuss Your Requirement
                 </h3>
 
                 <p className="mt-3 text-slate-600 leading-7">
-                  Contact our medical supply experts to secure high-quality equipment, diagnostic kits, and medical consumables in bulk.
+                  Tell us the application, preferred specification, quantity and delivery location. We can help organize the product details needed for a clear purchasing decision.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-8">
@@ -154,7 +154,7 @@ export default function CTASection({ city }) {
                     className="flex-1"
                   >
                     <button className="w-full bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 text-white px-6 py-4 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 hover:scale-[1.02] !text-white">
-                      Contact Us
+                      Send Requirement
                       <ArrowRight size={18} />
                     </button>
                   </Link>
@@ -168,7 +168,7 @@ export default function CTASection({ city }) {
                         href={`tel:${linkNum}`}
                         className="border border-slate-200 px-6 py-4 rounded-2xl font-semibold hover:bg-slate-50 transition text-center text-slate-700 hover:text-indigo-650 hover:border-indigo-200 flex-1"
                       >
-                        {phoneNumbers.length > 1 ? `Call: ${cleanNum}` : "Call Now"}
+                        {phoneNumbers.length > 1 ? `Call: ${cleanNum}` : "Speak to Team"}
                       </a>
                     );
                   })}

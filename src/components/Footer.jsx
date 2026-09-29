@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,6 +19,8 @@ export default function Footer() {
   const [contactInfo, setContactInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [districtData, setDistrictData] = useState(null);
+  const [servicesList, setServicesList] = useState([]);
+  const [productCategories, setProductCategories] = useState([]);
 
   const pathname = usePathname();
 
@@ -47,36 +47,56 @@ export default function Footer() {
   ===================================================== */
 
   useEffect(() => {
-    const loadContact = async () => {
-      try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "glucostripscom",
-            "pages",
-            "contact"
-          )
-        );
+    fetch("/api/site-data?page=contact", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => setContactInfo(d?.contactInfo || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
-        if (snap.exists()) {
-          setContactInfo(
-            snap.data().contactInfo || []
-          );
+  /* =====================================================
+     LOAD SERVICES DYNAMICALLY
+  ===================================================== */
+
+  useEffect(() => {
+    fetch("/api/site-data?page=services", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.services && Array.isArray(d.services) && d.services.length > 0) {
+          setServicesList(d.services);
         }
+      })
+      .catch(console.error);
+  }, []);
 
-        setLoading(false);
-      } catch (err) {
-        console.error(
-          "Error loading contact:",
-          err
-        );
+  /* =====================================================
+     LOAD PRODUCT CATEGORIES DYNAMICALLY (CATEGORIES ONLY)
+  ===================================================== */
 
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    fetch("/api/catalog", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        const prods = d?.products || [];
+        const catsMap = new Map();
 
-    loadContact();
+        prods.forEach((p) => {
+          if (p.category) {
+            const catName = p.category.trim();
+            catsMap.set(catName, (catsMap.get(catName) || 0) + 1);
+          }
+        });
+
+        const items = Array.from(catsMap.keys()).map((name) => ({
+          name,
+          slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        }));
+
+        if (items.length > 0) {
+          setProductCategories(items);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   /* =====================================================
@@ -84,37 +104,11 @@ export default function Footer() {
   ===================================================== */
 
   useEffect(() => {
-    const loadDistrict = async () => {
-      if (!district) {
-        setDistrictData(null);
-        return;
-      }
-
-      try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "glucostripscom",
-            "districts",
-            district
-          )
-        );
-
-        if (snap.exists()) {
-          setDistrictData(
-            snap.data()
-          );
-        }
-      } catch (err) {
-        console.error(
-          "Error loading district:",
-          err
-        );
-      }
-    };
-
-    loadDistrict();
+    if (!district) return;
+    fetch(`/api/site-data?page=district&district=${encodeURIComponent(district)}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then(setDistrictData)
+      .catch(console.error);
   }, [district]);
 
   /* =====================================================
@@ -215,36 +209,25 @@ export default function Footer() {
   if (loading) {
     return (
       <footer className="border-t border-slate-200 bg-white">
-
         <div className="container-custom py-16">
-
           <div className="grid gap-10 lg:grid-cols-4 md:grid-cols-2">
-
             {[...Array(4)].map((_, i) => (
               <div key={i}>
-
                 <div className="mb-6 h-8 w-40 animate-pulse rounded bg-slate-200" />
-
                 {[...Array(5)].map((_, j) => (
                   <div
                     key={j}
                     className="mb-4 h-5 animate-pulse rounded bg-slate-200"
                   />
                 ))}
-
               </div>
             ))}
-
           </div>
 
           <div className="mt-12 border-t border-slate-200 pt-6">
-
             <div className="h-5 w-72 animate-pulse rounded bg-slate-200" />
-
           </div>
-
         </div>
-
       </footer>
     );
   }
@@ -255,27 +238,20 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-slate-200 bg-white">
-
       <div className="container-custom py-16">
-
         <div className="grid gap-10 lg:grid-cols-5 md:grid-cols-2">
-
           {/* =================================================
               BRAND
           ================================================= */}
 
           <div>
-
             <h2 className="flex items-center text-2xl font-bold">
-
               <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
                 Raj
               </span>
-
               <span className="font-semibold text-slate-900">
                 {" "}Biosis
               </span>
-
             </h2>
 
             <p className="mt-5 leading-7 text-slate-600">
@@ -286,11 +262,8 @@ export default function Footer() {
             </p>
 
             {/* Social Media */}
-
             <div className="mt-6 flex gap-4">
-
               {/* Facebook */}
-
               <a
                 href="https://www.facebook.com/rajbiosispvtltd/"
                 target="_blank"
@@ -302,7 +275,6 @@ export default function Footer() {
               </a>
 
               {/* Instagram */}
-
               <a
                 href="https://www.instagram.com/rajbiosisindia/"
                 target="_blank"
@@ -312,9 +284,7 @@ export default function Footer() {
               >
                 <FaInstagram size={18} />
               </a>
-
             </div>
-
           </div>
 
           {/* =================================================
@@ -322,13 +292,11 @@ export default function Footer() {
           ================================================= */}
 
           <div>
-
-            <h3 className="mb-5 text-lg font-semibold">
+            <h3 className="mb-5 text-lg font-semibold text-slate-900">
               Quick Links
             </h3>
 
             <div className="flex flex-col gap-3 font-medium text-slate-600">
-
               <Link
                 href={makeLink("/")}
                 className="transition-colors duration-200 hover:text-indigo-600"
@@ -363,9 +331,7 @@ export default function Footer() {
               >
                 Contact
               </Link>
-
             </div>
-
           </div>
 
           {/* =================================================
@@ -373,23 +339,54 @@ export default function Footer() {
           ================================================= */}
 
           <div>
-
-            <h3 className="mb-5 text-lg font-semibold">
+            <h3 className="mb-5 text-lg font-semibold text-slate-900">
               Services
             </h3>
 
-            <div className="flex flex-col gap-3 text-slate-600">
+            <div className="flex flex-col gap-3 font-medium text-slate-600">
+              {servicesList.length > 0 ? (
+                servicesList.slice(0, 5).map((service, index) => (
+                  <Link
+                    key={index}
+                    href={makeLink("/services")}
+                    className="transition-colors duration-200 hover:text-indigo-600 line-clamp-1"
+                    title={service.title || service.name}
+                  >
+                    {service.title || service.name}
+                  </Link>
+                ))
+              ) : (
+                <>
+                  <Link
+                    href={makeLink("/services")}
+                    className="transition-colors duration-200 hover:text-indigo-600"
+                  >
+                    Scheduled Maintenance & Calibration
+                  </Link>
 
-              <p>Diagnostic Kits</p>
+                  <Link
+                    href={makeLink("/services")}
+                    className="transition-colors duration-200 hover:text-indigo-600"
+                  >
+                    Lab Instrumentation Setup
+                  </Link>
 
-              <p>Laboratory Equipment</p>
+                  <Link
+                    href={makeLink("/services")}
+                    className="transition-colors duration-200 hover:text-indigo-600"
+                  >
+                    Reagent Distribution
+                  </Link>
 
-              <p>Medical Consumables</p>
-
-              <p>Setup & Support</p>
-
+                  <Link
+                    href={makeLink("/services")}
+                    className="transition-colors duration-200 hover:text-indigo-600"
+                  >
+                    Technical Support & Repairs
+                  </Link>
+                </>
+              )}
             </div>
-
           </div>
 
           {/* =================================================
@@ -397,60 +394,31 @@ export default function Footer() {
           ================================================= */}
 
           <div>
-
-            <h3 className="mb-5 text-lg font-semibold">
+            <h3 className="mb-5 text-lg font-semibold text-slate-900">
               Product Categories
             </h3>
 
             <div className="flex flex-col gap-3 font-medium text-slate-600">
-
-              <Link
-                href={makeLink(
-                  "/items?category=biochemistry-analyzer"
-                )}
-                className="transition-colors duration-200 hover:text-indigo-600"
-              >
-                Biochemistry Analyzers
-              </Link>
-
-              <Link
-                href={makeLink(
-                  "/items?category=hematology-analyzers"
-                )}
-                className="transition-colors duration-200 hover:text-indigo-600"
-              >
-                Hematology Analyzers
-              </Link>
-
-              <Link
-                href={makeLink(
-                  "/items?category=blood-bank-equipments"
-                )}
-                className="transition-colors duration-200 hover:text-indigo-600"
-              >
-                Blood Bank Equipments
-              </Link>
-
-              <Link
-                href={makeLink(
-                  "/items?category=blood-collection-tubes"
-                )}
-                className="transition-colors duration-200 hover:text-indigo-600"
-              >
-                Blood Collection Tubes
-              </Link>
-
-              <Link
-                href={makeLink(
-                  "/items?category=rapid-test-kit"
-                )}
-                className="transition-colors duration-200 hover:text-indigo-600"
-              >
-                Rapid Test Kits
-              </Link>
-
+              {productCategories.length > 0 ? (
+                productCategories.slice(0, 8).map((cat, index) => (
+                  <Link
+                    key={index}
+                    href={makeLink(`/items?category=${cat.slug}`)}
+                    className="transition-colors duration-200 hover:text-indigo-600 line-clamp-1"
+                    title={cat.name}
+                  >
+                    {cat.name}
+                  </Link>
+                ))
+              ) : (
+                <Link
+                  href={makeLink("/items?category=test-strips")}
+                  className="transition-colors duration-200 hover:text-indigo-600"
+                >
+                  Test Strips
+                </Link>
+              )}
             </div>
-
           </div>
 
           {/* =================================================
@@ -458,82 +426,56 @@ export default function Footer() {
           ================================================= */}
 
           <div>
-
-            <h3 className="mb-5 text-lg font-semibold">
+            <h3 className="mb-5 text-lg font-semibold text-slate-900">
               Contact Info
             </h3>
 
             <div className="space-y-4 font-medium text-slate-600">
-
               {/* ADDRESS */}
-
               <div className="flex items-start gap-3">
-
                 <MapPin
                   size={18}
                   className="mt-1 shrink-0 text-indigo-600"
                 />
-
                 <p>
                   {dynamicAddress}
                 </p>
-
               </div>
 
               {/* MULTIPLE PHONE NUMBERS */}
-
               <div className="flex items-start gap-3">
-
                 <Phone
                   size={18}
                   className="mt-1 shrink-0 text-indigo-600"
                 />
-
                 <div className="flex flex-col gap-2">
-
                   {phoneNumbers.length > 0 ? (
-
-                    phoneNumbers.map(
-                      (number, index) => {
-
-                        const phoneText =
-                          String(number);
-
-                        return (
-                          <a
-                            key={`${phoneText}-${index}`}
-                            href={`tel:${makePhoneLink(
-                              phoneText
-                            )}`}
-                            className="transition-colors duration-200 hover:text-indigo-600"
-                          >
-                            {phoneText}
-                          </a>
-                        );
-                      }
-                    )
-
+                    phoneNumbers.map((number, index) => {
+                      const phoneText = String(number);
+                      return (
+                        <a
+                          key={`${phoneText}-${index}`}
+                          href={`tel:${makePhoneLink(phoneText)}`}
+                          className="transition-colors duration-200 hover:text-indigo-600"
+                        >
+                          {phoneText}
+                        </a>
+                      );
+                    })
                   ) : (
-
                     <span>
                       Contact us
                     </span>
-
                   )}
-
                 </div>
-
               </div>
 
               {/* EMAIL */}
-
               <div className="flex items-start gap-3">
-
                 <Mail
                   size={18}
                   className="mt-1 shrink-0 text-indigo-600"
                 />
-
                 {email ? (
                   <a
                     href={`mailto:${email}`}
@@ -546,13 +488,9 @@ export default function Footer() {
                     Email us
                   </span>
                 )}
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         {/* =================================================
@@ -560,21 +498,15 @@ export default function Footer() {
         ================================================= */}
 
         <div className="mt-12 flex flex-col items-center justify-between border-t border-slate-200 pt-6 text-sm text-slate-500 md:flex-row">
-
           <p>
-            © 2026 Raj Biosis.
-            All rights reserved.
+            © 2026 Raj Biosis. All rights reserved.
           </p>
 
           <p className="mt-3 md:mt-0">
-            Designed with precision for
-            modern diagnostics.
+            Designed with precision for modern diagnostics.
           </p>
-
         </div>
-
       </div>
-
     </footer>
   );
 }

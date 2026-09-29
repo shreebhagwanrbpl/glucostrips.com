@@ -20,14 +20,6 @@ import {
 
 import { Download } from "lucide-react";
 
-import {
-    doc,
-    getDoc,
-    getDocs,
-    addDoc,
-    collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
 const makeSlug = (text = "") =>
     text
         .toLowerCase()
@@ -96,29 +88,29 @@ export default function ProductDetails({ slug }) {
 
     const phoneNumbers = Array.isArray(phone)
         ? phone.filter(
-              (num) =>
-                  num !== null &&
-                  num !== undefined &&
-                  String(num).trim() !== ""
-          )
+            (num) =>
+                num !== null &&
+                num !== undefined &&
+                String(num).trim() !== ""
+        )
         : phone !== null &&
-          phone !== undefined &&
-          String(phone).trim() !== ""
-          ? [phone]
-          : ["+91 9983123469"];
+            phone !== undefined &&
+            String(phone).trim() !== ""
+            ? [phone]
+            : ["+91 9983123469"];
 
     const emails = Array.isArray(email)
         ? email.filter(
-              (em) =>
-                  em !== null &&
-                  em !== undefined &&
-                  String(em).trim() !== ""
-          )
+            (em) =>
+                em !== null &&
+                em !== undefined &&
+                String(em).trim() !== ""
+        )
         : email !== null &&
-          email !== undefined &&
-          String(email).trim() !== ""
-          ? [email]
-          : ["rajbiosis@yahoo.in"];
+            email !== undefined &&
+            String(email).trim() !== ""
+            ? [email]
+            : ["rajbiosis@yahoo.in"];
 
     const pathParts = pathname
         .split("/")
@@ -185,22 +177,14 @@ export default function ProductDetails({ slug }) {
         try {
             setSubmitting(true);
 
-            await addDoc(
-                collection(
-                    db,
-                    "websitesQueries",
-                    "glucostripscom",
-                    "productQueries"
-                ),
-                {
+            await fetch("/api/product-query", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
                     ...form,
                     productName: product.title,
                     productSlug: product.slug,
                     brand: product.brand || "",
                     model: product.model || "",
                     createdAt: new Date(),
-                }
-            );
+                })}).then(async r=>{if(!r.ok) throw new Error((await r.json()).error||"Submission failed");});
 
             toast.success(
                 "Your enquiry has been submitted successfully."

@@ -1,29 +1,8 @@
-import { fetchFullCatalog as fetchFullCatalogRaw } from "./data-fetcher";
 import { cache } from "react";
-
-// Global in-memory cache for the server process to bypass Next.js 2MB unstable_cache limit
-let cachedCatalog = null;
-let cachedCatalogTimestamp = 0;
-const CACHE_TTL = 3600 * 1000; // 1 hour in milliseconds
-
-async function getCachedCatalog() {
-  const now = Date.now();
-  if (cachedCatalog && (now - cachedCatalogTimestamp) < CACHE_TTL) {
-    console.log(`[data-fetcher-server] Serving catalog from server memory cache (${((now - cachedCatalogTimestamp) / 1000).toFixed(1)}s old)`);
-    return cachedCatalog;
-  }
-
-  console.log("[data-fetcher-server] Server memory cache miss or expired. Fetching raw catalog from Firestore...");
-  const data = await fetchFullCatalogRaw();
-  cachedCatalog = data;
-  cachedCatalogTimestamp = now;
-  return data;
-}
-
-export const fetchFullCatalog = cache(async () => {
-  const start = performance.now();
-  const products = await getCachedCatalog();
-  const end = performance.now();
-  console.log(`[data-fetcher-server] fetchFullCatalog took ${(end - start).toFixed(2)}ms`);
-  return products;
-});
+import { fetchFullCatalog as fetchFullCatalogClient, makeSlug, fetchDistrictsList } from "./data-fetcher";
+export const fetchFullCatalog = cache(async () => fetchFullCatalogClient());
+export const getProductBySlug = cache(async (slug) => { const c=await fetchFullCatalog(); return c.find(p=>p.slug===slug || makeSlug(p.title)===slug) || null; });
+export const getAllCategories = cache(async () => { const map=new Map(); (await fetchFullCatalog()).forEach(p=>{const name=p.category||"General"; const slug=makeSlug(name); if(!map.has(slug)) map.set(slug,{name,slug,products:[]}); map.get(slug).products.push(p);}); return [...map.values()]; });
+export const getCategoryBySlug = cache(async slug => (await getAllCategories()).find(c=>c.slug===slug)||null);
+export const getAllBrands = cache(async()=>{const map=new Map();(await fetchFullCatalog()).forEach(p=>{const name=p.brand||""; if(!name)return;const slug=makeSlug(name);if(!map.has(slug))map.set(slug,{name,slug,products:[]});map.get(slug).products.push(p);});return [...map.values()];});
+export { fetchDistrictsList };

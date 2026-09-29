@@ -21,5 +21,5 @@ export default async function ServicesPage({ city = "" }) {
   } catch (error) {
     console.error("Error fetching services on server:", error);
   }
-  return <div className="site1-static"><ServicesClient services={services} city={city} /></div>;
+  return <div className="site1-static"><ServicesClient initialServices={services} city={city} /></div>;
 }

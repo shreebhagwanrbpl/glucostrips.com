@@ -1,83 +1,53 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Building2, Microscope, ShoppingCart } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 
 export default function Testimonials() {
-  const reviews = [
+  const requirements = [
     {
-      name: "Dr. Rajesh Kumar",
-      role: "Clinical Diagnostics Director",
-      review:
-        "Sourcing biochemistry analyzers and diagnostic kits in bulk has been seamless since we partnered with them.",
+      icon: <Microscope size={24} />,
+      title: "Diagnostic Centre Requirement",
+      text: "An analyzer enquiry can be paired with reagents, controls, test kits and routine accessories so the complete testing workflow is considered together.",
     },
     {
-      name: "Amit Sharma",
-      role: "Hospital Procurement Manager",
-      review:
-        "Excellent calibration and maintenance services. The diagnostic systems perform with high reliability.",
+      icon: <Building2 size={24} />,
+      title: "Hospital Department Requirement",
+      text: "Procurement teams can compare biomedical equipment, monitoring devices, laboratory products and consumables for multiple departments in one request.",
     },
     {
-      name: "Neha Verma",
-      role: "Purchasing Agent",
-      review:
-        "The laboratory reagents and bulk consumables arrived on time, in perfect temperature-controlled packaging.",
-    }
+      icon: <ShoppingCart size={24} />,
+      title: "Dealer or Bulk Purchase",
+      text: "Dealers and institutional buyers can request product-wise quantities, model options and repeat-consumable requirements for consolidated commercial discussion.",
+    },
   ];
 
   return (
     <section className="section-padding bg-white">
       <div className="container-custom">
-
         <SectionTitle
-          badge="Client Reviews"
-          title="What Customers Say"
-          description="Trusted by diagnostic networks, hospitals, and clinical laboratories across the country."
+          badge="Typical Buying Scenarios"
+          title="Built for More Than a Single Product Enquiry"
+          description="The catalogue is designed for mixed biomedical requirements, whether you are replacing one item, setting up a laboratory, or coordinating a multi-category purchase."
           center
         />
 
         <div className="grid lg:grid-cols-3 gap-8 mt-16">
-
-          {reviews.map((item, index) => (
+          {requirements.map((item, index) => (
             <motion.div
               key={index}
-              initial={{
-                opacity: 0,
-                y: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.15,
-              }}
-              viewport={{
-                once: true,
-              }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+              viewport={{ once: true }}
               className="bg-slate-50 rounded-[32px] p-8 border border-slate-100 card-shadow"
             >
-              {/* Stars */}
-              <div className="flex gap-1 text-yellow-400 text-xl mb-5">
-                ★★★★★
+              <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 text-indigo-600 flex items-center justify-center mb-6">
+                {item.icon}
               </div>
-
-              {/* Review */}
-              <p className="text-slate-600 leading-8 italic">
-                "{item.review}"
-              </p>
-
-              {/* User */}
-              <div className="mt-8">
-                <h4 className="font-semibold text-lg">
-                  {item.name}
-                </h4>
-
-                <p className="text-slate-500">
-                  {item.role}
-                </p>
-              </div>
+              <h4 className="font-semibold text-xl text-slate-900">{item.title}</h4>
+              <p className="text-slate-600 leading-8 mt-4">{item.text}</p>
             </motion.div>
           ))}
         </div>

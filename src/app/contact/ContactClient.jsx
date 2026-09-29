@@ -1,16 +1,9 @@
 "use client";
+import { db, getDoc, addDoc, collection, doc } from "@/lib/api-data-client";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import {
-  doc,
-  getDoc,
-  addDoc,
-  collection,
-} from "firebase/firestore";
-
-import { db } from "@/lib/firebase";
 import toast from "react-hot-toast";
 
 import {
@@ -71,38 +64,7 @@ export default function ContactClient({
 LOAD CONTACT INFORMATION
 ===================================================== */
 
-  useEffect(() => {
-    const loadContact = async () => {
-      try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "glucostripscom",
-            "pages",
-            "contact"
-          )
-        );
-
-        if (snap.exists()) {
-          const data = snap.data();
-
-          setContactInfo(
-            Array.isArray(data.contactInfo)
-              ? data.contactInfo
-              : []
-          );
-        }
-      } catch (err) {
-        console.error(
-          "Error loading contact information:",
-          err
-        );
-      }
-    };
-
-    loadContact();
-  }, []);
+  useEffect(() => { fetch("/api/site-data?page=contact", { cache: "no-store" }).then(r => r.json()).then(d => setContactInfo(d?.contactInfo || [])).catch(console.error); }, []);
   /* =====================================================
      FORM CHANGE
   ===================================================== */
@@ -664,16 +626,7 @@ LOAD CONTACT INFORMATION
                 className="w-full border border-slate-200 rounded-2xl px-5 py-4 outline-none focus:border-indigo-650 focus:ring-1 focus:ring-indigo-650 transition"
               />
 
-              {/* SUBJECT */}
 
-              <input
-                type="text"
-                name="subject"
-                placeholder="Enquiry Subject"
-                value={form.subject}
-                onChange={handleChange}
-                className="w-full border border-slate-200 rounded-2xl px-5 py-4 outline-none focus:border-indigo-650 focus:ring-1 focus:ring-indigo-650 transition"
-              />
 
               {/* MESSAGE */}
 
