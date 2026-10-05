@@ -64,7 +64,7 @@ export default function ServicesPreview({ initialServices = [] }) {
   }, []);
 
   const rawServices = servicesData.length > 0 ? servicesData : defaultServices;
-  const servicesToDisplay = rawServices.slice(0, 4).map((item, index) => ({
+  const servicesToDisplay = rawServices.slice(0, 3).map((item, index) => ({
     icon: item.icon || previewIcons[index % previewIcons.length],
     title: item.title || item.name || "Biomedical Service",
     description: item.desc || item.description || "",
@@ -80,7 +80,7 @@ export default function ServicesPreview({ initialServices = [] }) {
           center
         />
 
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           {servicesToDisplay.map((service, index) => (
             <motion.div
               key={index}
@@ -97,3 +97,4 @@ export default function ServicesPreview({ initialServices = [] }) {
     </section>
   );
 }
+

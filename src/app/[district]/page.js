@@ -2,9 +2,8 @@ import Link from "next/link";
 import { fetchDistrictData, fetchDistrictsInState } from "@/lib/data-fetcher";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import SectionTitle from "@/components/SectionTitle";
-import dynamic from "next/dynamic";
+import HomeLayout from "@/components/HomeLayout";
 
-const HomeLayout = dynamic(() => import("@/components/HomeLayout"), { ssr: true });
 
 export default async function DistrictPage({ params }) {
   const { district = "jaipur" } = await params;

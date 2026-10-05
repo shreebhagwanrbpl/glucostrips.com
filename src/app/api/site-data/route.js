@@ -1,12 +1,3 @@
-import { NextResponse } from "next/server";
-import { readDocument, readCollection } from "@/lib/sqliteDb";
-import { COMPANY_ID, WEBSITE_ID } from "@/lib/catalog-utils";
-export const dynamic="force-dynamic"; export const revalidate=0; export const fetchCache="force-no-store";
-export async function GET(req){
- const {searchParams}=new URL(req.url); const page=searchParams.get("page")||"home";
- try {
-  if(page==="districts") return NextResponse.json({districts:readCollection(`websites/${COMPANY_ID}/${WEBSITE_ID}/districts`)},{headers:{"Cache-Control":"no-store"}});
-  if(page==="district"){const d=searchParams.get("district")||""; const data=readDocument(`websites/${COMPANY_ID}/${WEBSITE_ID}/districts/${d}`); return NextResponse.json(data||{});} 
-  return NextResponse.json(readDocument(`websites/${COMPANY_ID}/${WEBSITE_ID}/pages/${page}`)||{},{headers:{"Cache-Control":"no-store, no-cache, must-revalidate, max-age=0"}});
- } catch(e){console.error(e);return NextResponse.json({success:false,error:e.message},{status:500});}
-}
+import {fetchHomeData,fetchContactData,fetchServicesData,fetchDistrictData,fetchDistricts,fetchSitePage} from "@/lib/data-fetcher-server";import {WEBSITE_ID} from "@/lib/catalog-utils";
+export const dynamic="force-dynamic";export const revalidate=0;export const fetchCache="force-no-store";
+export async function GET(req){const p=new URL(req.url).searchParams;const page=p.get("page")||p.get("pageType")||p.get("type")||"home";const district=p.get("district");try{let data;if(page==="district"||district)data=await fetchDistrictData(district);else if(page==="districts")data=await fetchDistricts();else if(page==="home")data=await fetchHomeData();else if(page==="contact")data=await fetchContactData();else if(page==="services")data=await fetchServicesData();else data=await fetchSitePage(page,WEBSITE_ID);const extra=data&&typeof data==="object"&&!Array.isArray(data)?data:{data:data||{}};return Response.json({success:true,websiteId:WEBSITE_ID,pageType:page,...extra,data:data||{}},{headers:{"Cache-Control":"no-store, no-cache, must-revalidate, max-age=0"}})}catch(e){console.error(e);return Response.json({success:false,error:e.message,data:null},{status:500})}}

@@ -1,7 +1,10 @@
-import { fetchFullCatalog } from "@/lib/data-fetcher-server";
-import dynamic from "next/dynamic";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-const HomeLayout = dynamic(() => import("@/components/HomeLayout"), { ssr: true });
+import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import HomeLayout from "@/components/HomeLayout";
+
 
 export const metadata = {
   title: "Diagnostic, Medical & Laboratory Supplies | Raj Biosis",

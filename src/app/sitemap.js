@@ -1,7 +1,11 @@
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import { calculateSeoScore, PRIMARY_DISTRICTS } from "@/lib/seo-helper";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function sitemap() {
+
     const baseUrl = "https://glucostrips.com";
     const urls = [];
 

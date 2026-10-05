@@ -1,18 +1,14 @@
-const apiBase = () => {
-  if (typeof window !== "undefined") return "";
-  return process.env.ADMIN_API_BASE_URL || process.env.ADMIN_API_URL || process.env.SQLITE_ADMIN_API_URL || "http://localhost:3000";
-};
-async function api(path) {
-  const res = await fetch(`${apiBase()}${path}`, { cache: "no-store", headers: { "Cache-Control": "no-store" } });
-  if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
-  return res.json();
-}
-export async function fetchFullCatalog(){ const d=await api("/api/catalog"); return d.products || d.catalog || []; }
-export async function fetchHomeData(){ return api("/api/site-data?page=home"); }
-export async function fetchContactData(){ return api("/api/site-data?page=contact"); }
-export async function fetchServicesData(){ return api("/api/site-data?page=services"); }
-export async function fetchDistrictData(district){ return api(`/api/site-data?page=district&district=${encodeURIComponent(district||"")}`); }
-export async function fetchDistrictsList(){ const d=await api("/api/site-data?page=districts"); return d.districts || []; }
-export async function fetchDistrictsInState(){ return fetchDistrictsList(); }
-export async function fetchProductBySlug(slug){ const list=await fetchFullCatalog(); return list.find(p=>p.slug===slug || String(p.title||"").toLowerCase().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-")===slug) || null; }
-export const makeSlug=(text="")=>String(text).toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-");
+import { COMPANY_ID, WEBSITE_ID, makeSlug, isItemVisibleOnWebsite } from "./catalog-utils";
+import { adminFetch, fetchCatalogFromAdmin } from "./admin-api";
+export { makeSlug };
+function normalizeProduct(p={},i=0){const title=p.title||p.name||"Biomedical Equipment";const images=Array.isArray(p.images)&&p.images.length?p.images:p.image?[p.image]:p.imageUrl?[p.imageUrl]:p.imgUrl?[p.imgUrl]:[];const id=p.id||p.uid||p.productId||`${makeSlug(title)||"product"}-${i}`;return {...p,id,productId:p.productId||id,uid:p.uid||id,title,name:title,slug:p.slug||makeSlug(title),desc:p.desc??p.description??"",description:p.description??p.desc??"",category:p.category||"Diagnostic & Laboratory Equipment",categoryId:p.categoryId||p.categoryID||makeSlug(p.category||"diagnostic"),subCategory:p.subCategory||p.subcategory||p.category||"General",subcategoryId:p.subcategoryId||p.subCategoryId||makeSlug(p.subCategory||p.subcategory||p.category||"general"),companyId:p.companyId||COMPANY_ID,images,image:images[0]||p.image||"",video:p.video||"",pdf:p.pdf||"",brand:p.brand||"",model:p.model||"",capacity:p.capacity||"",throughput:p.throughput||"",instrument:p.instrument||"",usage:p.usage||"",parameters:p.parameters||"",automation:p.automation||"",availability:p.availability||"",size:p.size||"",isPublished:p.isPublished!==false};}
+const unwrap=j=>j?.data??j?.pages??j??null;
+export async function fetchFullCatalog({companyId=COMPANY_ID,websiteId=WEBSITE_ID}={}){const raw=await fetchCatalogFromAdmin();return raw.filter(x=>isItemVisibleOnWebsite(x,websiteId)).map(normalizeProduct);}
+export async function fetchCategoriesTree({companyId=COMPANY_ID,websiteId=WEBSITE_ID}={}){try{const j=await adminFetch("/api/catalog",{}, {websiteId,companyId});const raw=j?.categories??j?.data?.categories;if(Array.isArray(raw)&&raw.length)return raw.filter(c=>isItemVisibleOnWebsite(c,websiteId));}catch(e){console.warn("Admin category tree failed; deriving from products:",e);}const map=new Map();for(const p of await fetchFullCatalog({companyId,websiteId})){const id=p.categoryId||makeSlug(p.category||"general"),name=p.category||id;if(!map.has(id))map.set(id,{id,name,category:name,slug:makeSlug(name),products:[],subcategories:new Map()});const c=map.get(id);c.products.push(p);const sid=p.subcategoryId||makeSlug(p.subCategory||"general"),sn=p.subCategory||sid;if(!c.subcategories.has(sid))c.subcategories.set(sid,{id:sid,name:sn,subCategory:sn,slug:makeSlug(sn),products:[],productsCount:0});const s=c.subcategories.get(sid);s.products.push(p);s.productsCount++;}return [...map.values()].map(c=>({...c,subcategories:[...c.subcategories.values()],totalProductsCount:c.products.length}));}
+export async function fetchCatalogCategories(o={}){return (await fetchCategoriesTree(o)).map(c=>c.name||c.category||c.id);}
+export async function fetchSitePage(pageType,websiteId=WEBSITE_ID){return unwrap(await adminFetch("/api/site-data",{}, {type:pageType,pageType,websiteId,companyId:COMPANY_ID}));}
+export async function fetchDocCached(path){const a=String(path||"").split("/"),i=a.indexOf("pages");return i>=0&&a[i+1]?fetchSitePage(a[i+1]):null;}
+export const fetchHomeData=()=>fetchSitePage("home");export const fetchContactData=()=>fetchSitePage("contact");export const fetchServicesData=()=>fetchSitePage("services");
+export async function fetchDistrictData(d){if(!d)return null;return unwrap(await adminFetch("/api/site-data",{}, {type:"district",pageType:"district",district:d,websiteId:WEBSITE_ID,companyId:COMPANY_ID}));}
+export async function fetchDistricts({companyId=COMPANY_ID,websiteId=WEBSITE_ID}={}){const j=await adminFetch("/api/site-data",{}, {type:"districts",pageType:"districts",websiteId,companyId});const a=j?.data?.districts??j?.data??j?.districts??j;return Array.isArray(a)?a.map((x,i)=>({...x,id:x.id||x.slug||`dist-${i}`,slug:x.slug||x.id||makeSlug(x.district||x.name||`dist-${i}`) })):[];}
+export async function fetchDistrictsInState(stateName, opts = {}){const districts = await fetchDistricts(opts);if (!stateName) return districts;const target = String(stateName).trim().toLowerCase();return districts.filter(d => String(d.state || "").trim().toLowerCase() === target || String(d.stateName || "").trim().toLowerCase() === target);}
